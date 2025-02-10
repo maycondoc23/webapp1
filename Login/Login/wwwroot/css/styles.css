@@ -1,0 +1,44 @@
+#FotosPerfil {
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+}
+
+
+/* Estilos do Modal */
+.modal {
+    display: none; /* Esconde o modal por padrão */
+    position: fixed; /* Fixa o modal na tela */
+    z-index: 1; /* Garante que o modal fique sobreposto a outros elementos */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Fundo escuro */
+}
+
+/* Estilo da imagem dentro do modal */
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: fit-content;
+    max-height: 100vh;
+}
+
+/* Estilo para o botão de fechar */
+.close {
+    position: absolute;
+    top: 0px;
+    right: 50px;
+    color: white;
+    font-size: 65px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    .close:hover,
+    .close:focus {
+        color: #f1f1f1;
+        text-decoration: none;
+        cursor: pointer;
+    }

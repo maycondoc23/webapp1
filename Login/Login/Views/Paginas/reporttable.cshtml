@@ -1,0 +1,98 @@
+﻿@model List<Login.Models.Reportclass>
+@using System.Security.Claims  <!-- Adicionando o namespace correto para Claims -->
+@{
+    ViewData["Title"] = "Reports";
+}
+
+
+<title>@ViewData["Title"]</title>
+
+<h2>@ViewData["Title"]</h2>
+<link rel="stylesheet" href="~/css/tabelas.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/styles.css" />
+
+<body>
+    <input id="searchInput" onkeyup="filterTable()" placeholder="Pesquisar..." />
+    <table class="Table" id="myTable">
+        <thead>
+            <tr>
+                <th  scope="col">Id</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Report
+                <th scope="col">Detalhes
+                <th style="width: 25%;" scope="col">Action </th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            @foreach (var Reportclass in Model)
+            {
+                <tr>
+                    <td>@Reportclass.Id</td>
+                    <td>@Reportclass.nome</td>
+                    <td>@Reportclass.report</td>
+                    <td>@Reportclass.detalhe</td>
+                    <td>
+                        @if (string.IsNullOrEmpty(Reportclass.image))
+                        {
+                        }
+                        else
+                        {
+                            <picture>
+                                <img id="FotosPerfil" src="@Url.Content($"~/uploads/fotos/{Reportclass.image}")" alt=""
+                                     style="width: 100%; max-height: 250px; cursor: zoom-in;" onclick="openModal('@Url.Content($"~/uploads/fotos/{Reportclass.image}")')" />
+                            </picture>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+<!-- O Modal (Popup) -->
+<div id="myModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <span class="close" onkeyup="closeModal()"></span>
+    <img class="modal-content" id="modalImage"  />
+    <div id="caption"></div>
+</div>
+<div class="pagination-dropdown">
+    <label for="limitSelect">Show:</label>
+    <select id="limitSelect" onchange="setLimit(this.value)" style="border-radius: 5px;">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="all">All</option>
+    </select>
+</div>
+
+<script>
+    // Função para controlar o limite de exibição
+    function setLimit(limit) {
+        var table = document.getElementById("myTable"); //de um id para a table
+        var rows = table.getElementsByTagName("tr");  //itera sobre todas linhas
+        var rowCount = rows.length;   //obtem a quantidade de linhas na tabela
+        var rowsToShow;   //variavel que vai receber quantas linhas exibir
+
+        // Mostrar todas as linhas ou apenas o número especificado
+        if (limit === 'all') {
+            rowsToShow = rowCount - 1;  // Subtrai 1 para não contar o cabeçalho
+        } else {
+            rowsToShow = limit;
+        }
+
+        // Loop através das linhas da tabela e exibe ou esconde as linhas
+        for (var i = 1; i < rowCount; i++) {  // Começa a partir de 1 para pular o cabeçalho
+            if (i <= rowsToShow) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    // Define o limite inicial ao carregar a página
+    setLimit(10); // Exibe 10 por padrão
+</script>
+
+<script src="~/js/tabela.js"></script>
+<a asp-controller="Login" asp-action="Logout">Login Page</a>

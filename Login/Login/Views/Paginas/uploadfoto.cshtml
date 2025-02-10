@@ -1,0 +1,23 @@
+﻿@model Login.Models.Usuario
+@{
+    ViewData["Title"] = "Upload de Foto";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.Error
+    </div>
+}
+
+<!-- Formulário para upload de imagem -->
+<form asp-controller="Uploads" asp-action="UploadSelectedFoto" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="file">Escolha uma foto:</label>
+        <input type="file" name="foto" id="file" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</form>

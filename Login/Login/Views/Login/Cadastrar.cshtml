@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Cadastrar";
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Login</title>
+
+    <!-- Referenciando o CSS que está em wwwroot/css/style.css -->
+    <link rel="stylesheet" href="~/css/logincss.css" />
+</head>
+<div class="wrapper">
+    <div class="logo">
+        <img src="~/lib/Logo/Foxcore.jpg" alt="">
+    </div>
+    <div class="text-center mt-4 name">
+        FoxCore
+    </div>
+    <form asp-controller="Login" asp-action="cadastro" class="p-3 mt-3">
+        <div class="form-field d-flex align-items-center">
+            <span class="far fa-user"></span>
+            <input type="text" name="nome" id="nome" placeholder="Name">
+        </div>
+        <div class="form-field d-flex align-items-center">
+            <span class="far fa-user"></span>
+            <input type="text" name="userName" id="userName" placeholder="Username">
+        </div>
+        <div class="form-field d-flex align-items-center">
+            <span class="fas fa-key"></span>
+            <input type="password" name="senha" id="pwd" placeholder="Password">
+        </div>
+        <button class="btn mt-3">Cadastrar usuario</button>
+        <a asp-controller="Login" asp-action="Index" >Fazer login</a>
+        <a asp-controller="Login" asp-action="Usuarios">View Users</a>
+      </form>
+</div>

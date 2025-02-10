@@ -1,0 +1,27 @@
+﻿@model Login.Models.Usuario
+@using System.Security.Claims  <!-- Adicionando o namespace correto para Claims -->
+
+
+@{
+    ViewData["Title"] = "exibição de Foto";
+    // var fotos_id = $"~/uploads/fotos/{@User.FindFirst(ClaimTypes.NameIdentifier)?.Value}.png";
+    var fotos_id = Url.Content($"~/uploads/fotos/{User.FindFirst(ClaimTypes.NameIdentifier)?.Value}.png");
+
+}
+
+
+@* @{ *@
+
+@* }    var usuarioId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; *@
+@* 	var usuarioLogadoId = int.TryParse(usuarioId, out var id) ? id : 0; // Converte para int ou atribui 0 em caso de erro *@
+
+
+<link rel="stylesheet" href="~/css/styles.css"/>
+
+<h2>@ViewData["Title"]</h2>
+<h2>@fotos_id </h2>
+<picture>
+    <img id="FotosPerfil" src=@fotos_id alt="" />
+</picture>
+
+

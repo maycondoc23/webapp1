@@ -1,0 +1,99 @@
+﻿@model List<Login.Models.Usuario>
+<!-- Declara que a view vai usar a lista de usuários -->
+@using System.Security.Claims  <!-- Adicionando o namespace correto para Claims -->
+@{
+    ViewData["Title"] = "Usuários Cadastrados";
+}
+
+@{
+    var usuarioId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var usuarioLogadoId = int.TryParse(usuarioId, out var id) ? id : 0; // Converte para int ou atribui 0 em caso de erro
+
+    // var fotos_id = $"~/uploads/fotos/{@User.FindFirst(ClaimTypes.NameIdentifier)?.Value}.png";
+    var fotos_id = Url.Content($"~/uploads/fotos/{User.FindFirst(ClaimTypes.NameIdentifier)?.Value}.png");
+
+}
+
+
+
+
+<title>@ViewData["Title"]</title>
+
+<h2>@ViewData["Title"]</h2>
+<link rel="stylesheet" href="~/css/tabelas.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/styles.css" />
+
+<h1>Teste @usuarioId </h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Username</th>
+            <th scope="col">Senha</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var usuario in Model)
+        {
+            <tr>
+                <td>@usuario.Id</td>
+                <td>@usuario.nome</td>
+                <td>@usuario.username</td>
+                <td>@usuario.senha</td>
+                <td>
+                    @* @if (usuario.Id == usuarioLogadoId) // Verifica se o usuário logado é o mesmo que o da linha *@
+                    @* { *@
+                    @*     <a href="@Url.Action("Edit", "Usuarios", new { id = usuario.Id })" class="btn btn-primary">Edit</a> *@
+                    @* } *@
+                    @* else *@
+                    @* { *@
+                    @*     <button type="button" class="btn btn-secondary" disabled>Edit</button> *@
+                    @* } *@
+                    <picture>
+                        <img id="FotosPerfil" src="@Url.Content($"~/uploads/fotos/{@usuario.image}" ?? "~/uploads/fotos/default.png")" alt="Foto do @usuario.image"
+                             style="width: 10%; cursor: pointer;" onclick="openModal('@Url.Content($"~/uploads/fotos/{@usuario.image}" ?? "~/uploads/fotos/default.png")')" />
+                    </picture>
+
+                    @* <picture> *@
+                    @*     <img id="FotosPerfil" src=@fotos_id alt="" onclick="openModal('@fotos_id')" /> *@
+                    @* </picture> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- O Modal (Popup) -->
+<div id="myModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImage" />
+    <div id="caption"></div>
+</div>
+
+
+<script src="~/js/tabela.js"></script>
+<a asp-controller="Login" asp-action="Logout">Login Page</a>
+<script>
+
+
+    // Função para abrir o modal e exibir a imagem em tamanho grande
+        function openModal(imageSrc) {
+        var modal = document.getElementById("myModal");
+        var modalImg = document.getElementById("modalImage");
+        var captionText = document.getElementById("caption");
+
+        modal.style.display = "block";  // Exibe o modal
+        modalImg.src = imageSrc;       // Define o src da imagem para o src da miniatura
+        captionText.innerHTML = "Foto em tamanho grande"; // Pode adicionar um título ou descrição
+    }
+
+        // Função para fechar o modal
+        function closeModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none"; // Esconde o modal
+    }
+
+
+</script>

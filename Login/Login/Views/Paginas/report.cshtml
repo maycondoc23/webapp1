@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Cadastrar";
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Login</title>
+
+    <!-- Referenciando o CSS que está em wwwroot/css/style.css -->
+    <link rel="stylesheet" href="~/css/logincss.css" />
+
+    <style>
+        /* Estilo para as miniaturas das imagens */
+        .image-previews {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+            .image-previews img {
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+            }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="logo">
+            <img src="~/lib/Logo/Foxcore.jpg" alt="Logo">
+        </div>
+        <div class="text-center mt-4 name">
+            FoxCore
+        </div>
+        <form asp-controller="Pages" asp-action="SubmitReport" enctype="multipart/form-data" class="p-3 mt-3">
+            <div class="form-field d-flex align-items-center">
+                <span class="far fa-user"></span>
+                <input type="text" name="nome" id="nome" placeholder="Name">
+            </div>
+            <div class="form-field d-flex align-items-center">
+                <span class="far fa-user"></span>
+                <input type="text" name="report" id="userName" placeholder="Report">
+            </div>
+            <div class="form-field d-flex align-items-center">
+                <span class="fas fa-key"></span>
+                <input name="detalhe" id="pwd" placeholder="Details">
+            </div>
+            <div class="form-group">
+                <label for="file">Escolha as fotos:</label>
+                <input type="file" name="images" id="images" class="form-control" multiple />
+            </div>
+
+            <!-- Área para exibir as miniaturas das imagens selecionadas -->
+            <div id="imagePreviews" class="image-previews">
+                <!-- As miniaturas serão inseridas aqui via JavaScript -->
+            </div>
+
+            <button type="submit" class="btn mt-3">Submit</button>
+            <a asp-controller="Login" asp-action="Index">Fazer login</a>
+            <a asp-controller="Login" asp-action="Usuarios">View Users</a>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("images").addEventListener("change", function (event) {
+            const files = event.target.files;
+            const previewsContainer = document.getElementById("imagePreviews");
+
+            // Limpa as pré-visualizações anteriores
+            previewsContainer.innerHTML = "";
+
+            // Itera sobre os arquivos selecionados
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const imgElement = document.createElement("img");
+                    imgElement.src = e.target.result;  // O conteúdo da imagem carregada
+                    previewsContainer.appendChild(imgElement);  // Adiciona a miniatura à div
+                };
+
+                // Lê o arquivo como uma URL de dados
+                reader.readAsDataURL(file);
+            });
+        });
+    </script>
+</body>
+</html>
