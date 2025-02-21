@@ -30,7 +30,7 @@ namespace Login.Controllers
         [HttpPost]
         public async Task<IActionResult> Logar(string username, string senha)
         {
-            MySqlConnection MySqlConnection = new MySqlConnection("server=localhost;database=webapp2;uid=root;password=1234");
+            MySqlConnection MySqlConnection = new MySqlConnection("server=localhost;database=webapp2;uid=root;password=12345");
             await MySqlConnection.OpenAsync();
             MySqlCommand MySqlCommand = MySqlConnection.CreateCommand();
             MySqlCommand.CommandText = $"SELECT * FROM apptable WHERE username = '{username}' AND senha = '{senha}'";
@@ -79,7 +79,7 @@ namespace Login.Controllers
         [HttpPost]
         public async Task<IActionResult> cadastro(string nome, string username, string senha)
         {
-            MySqlConnection MySqlConnection = new MySqlConnection("server=localhost;database=webapp2;uid=root;password=1234");
+            MySqlConnection MySqlConnection = new MySqlConnection("server=localhost;database=webapp2;uid=root;password=12345");
             MySqlCommand MySqlCommand = MySqlConnection.CreateCommand();
             await MySqlConnection.OpenAsync();
             MySqlCommand.CommandText = $"INSERT INTO apptable (nome, username, senha) VALUES ('{nome}', '{username}', '{senha}')";
@@ -94,7 +94,7 @@ namespace Login.Controllers
         {
             List<Usuario> usuarios = new List<Usuario>();
 
-            using (var connection = new MySqlConnection("server=localhost;database=webapp2;uid=root;password=1234"))
+            using (var connection = new MySqlConnection("server=localhost;database=webapp2;uid=root;password=12345"))
             {
                 await connection.OpenAsync();
 

@@ -21,7 +21,7 @@ namespace Login.Controllers
         [Authorize]
         public  IActionResult UploadFoto()
         {
-            return View("~/Views/Paginas/uploadfoto.cshtml");
+            return View("~/Views/Paginas/DashboardAsusFT.cshtml");
         }
         
         [Authorize]
@@ -48,7 +48,7 @@ namespace Login.Controllers
             if (images != null && images.Any())
             {
                 // Abrindo a conexão com o banco de dados
-                using (var connection = new MySqlConnection("server=localhost;database=webapp2;uid=root;password=1234"))
+                using (var connection = new MySqlConnection("server=localhost;database=webapp2;uid=root;password=12345"))
                 {
                     await connection.OpenAsync();
 
@@ -103,7 +103,7 @@ namespace Login.Controllers
         {
             List<Reportclass> reporttable = new List<Reportclass>();
 
-            using (var connection = new MySqlConnection("server=localhost;database=webapp2;uid=root;password=1234"))
+            using (var connection = new MySqlConnection("server=localhost;database=webapp2;uid=root;password=12345"))
             {
                 await connection.OpenAsync();
 

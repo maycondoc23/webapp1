@@ -1,0 +1,61 @@
+﻿@model List<Login.Models.StationData>
+@* #136ef2 *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>ASUS STATIONS PASS</h1>
+
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+        // Requisição AJAX para buscar os dados em JSON
+        fetch("/Dashboard/GetStationDataJson")
+            .then(response => response.json())
+            .then(data => {
+                // Processamento dos dados para o gráfico
+                var stations = data.map(item => item.station);
+                var passCounts = data.map(item => item.count);
+
+                // Configuração do gráfico
+                const config = {
+                    type: 'bar',
+                    data: {
+                        labels: stations,  // Labels (estações)
+                        datasets: [{
+                            label: 'Quantidade de PASS',
+                            data: passCounts,  // Quantidade de PASS
+                            borderColor: randomColor(),
+                            backgroundColor: randomColor(),
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                };
+
+                // Função para gerar cores aleatórias
+                function randomColor() {
+                    return 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
+                }
+
+                // Inicializar o gráfico
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, config);
+            })
+            .catch(error => {
+                console.error("Erro ao carregar dados: ", error);
+            });
+    </script>
+</body>
+</html>

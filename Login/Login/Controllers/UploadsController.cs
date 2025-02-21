@@ -33,7 +33,7 @@ namespace Login.Controllers
                     }
 
                     // Salvar o caminho no banco de dados
-                    using (var connection = new MySqlConnection("server=localhost;database=webapp2;uid=root;password=1234"))
+                    using (var connection = new MySqlConnection("server=localhost;database=webapp2;uid=root;password=12345"))
                     {
                         await connection.OpenAsync();
 

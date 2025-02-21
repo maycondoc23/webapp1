@@ -1,6 +1,16 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configura o logging
+builder.Services.AddLogging(logging =>
+{
+    logging.ClearProviders(); // Limpa os provedores de log padrões
+    logging.AddConsole(); // Adiciona a saída no console
+    logging.AddDebug();   // Adiciona o log para o modo Debug (útil para depuração)
+});
 
 // Adiciona o serviço de autenticação com cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

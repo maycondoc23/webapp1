@@ -1,0 +1,75 @@
+﻿@model List<dynamic>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Gráfico de PASS por Estação e Hora</h1>
+
+    <label for="dateSelector">Escolha a data:</label>
+    <input type="date" id="dateSelector" name="dateSelector" value="2025-02-20" onchange="filterData()">
+
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+        // Dados preparados pelo controller
+        var data = @Html.Raw(Json.Serialize(Model));
+
+        // Função para filtrar os dados com base na data selecionada
+        function filterData() {
+            const selectedDate = document.getElementById("dateSelector").value;
+            const filteredData = data.filter(item => item.Date.startsWith(selectedDate));
+
+            updateChart(filteredData);
+        }
+
+        // Função para atualizar o gráfico com dados filtrados
+        function updateChart(filteredData) {
+            const stations = [...new Set(filteredData.map(item => item.Station))];
+            const hours = Array.from({ length: 24 }, (_, i) => i);  // horas de 0 a 23
+
+            const chartData = {
+                labels: hours,
+                datasets: stations.map(station => ({
+                    label: station,
+                    data: hours.map(hour => {
+                        const count = filteredData.filter(item => item.Station === station && item.Hour === hour).length;
+                        return count;
+                    }),
+                    borderColor: randomColor(),
+                    backgroundColor: randomColor(),
+                    fill: false
+                }))
+            };
+
+            chart.update();
+        }
+
+        // Geração de cores aleatórias para cada estação
+        function randomColor() {
+            return 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
+        }
+
+        // Inicializar o gráfico com os dados
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',  // ou 'bar' para gráfico de barras
+            data: {},
+            options: {
+                responsive: true,
+                scales: {
+                    x: { title: { display: true, text: 'Hora' } },
+                    y: { title: { display: true, text: 'Quantidade de PASS' } }
+                }
+            });
+
+        // Atualizar o gráfico com os dados iniciais
+        updateChart(data);
+    </script>
+</body>
+</html>
