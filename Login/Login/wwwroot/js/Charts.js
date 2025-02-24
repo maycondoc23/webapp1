@@ -1,0 +1,1 @@
+﻿import 'chartjs-plugin-datalabels'

@@ -11,7 +11,7 @@ namespace Login.Controllers
     public class DashboardController : Controller
     {
         private readonly ILogger<DashboardController> _logger;
-        private readonly string _connectionString = "server=localhost;database=webapp2;uid=root;password=12345";
+        private readonly string _connectionString = "server=localhost;database=webapp2;uid=root;password=1234";
 
         public DashboardController(ILogger<DashboardController> logger)
         {
