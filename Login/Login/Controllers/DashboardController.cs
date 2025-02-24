@@ -11,7 +11,7 @@ namespace Login.Controllers
     public class DashboardController : Controller
     {
         private readonly ILogger<DashboardController> _logger;
-        private readonly string _connectionString = "server=localhost;database=webapp2;uid=root;password=1234";
+        private readonly string _connectionString = "server=localhost;database=webapp2;uid=root;password=12345";
 
         public DashboardController(ILogger<DashboardController> logger)
         {
@@ -20,13 +20,15 @@ namespace Login.Controllers
 
         // Método para buscar os dados e passá-los para a view
         [HttpGet]
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(DateTime? date)
         {
             try
             {
-                _logger.LogInformation("Iniciando a consulta para obter os dados de estações.");
+                // Log the incoming date parameter
+                _logger.LogInformation($"Iniciando a consulta para obter os dados de estações. Data: {date}");
 
-                var records = await GetStationDataAsync();
+                // Use the provided date or null if not provided
+                var records = await GetStationDataAsync(date);
 
                 if (records.Count == 0)
                 {
@@ -43,7 +45,7 @@ namespace Login.Controllers
         }
 
         // Função assíncrona para obter os dados da tabela no banco de dados
-        private async Task<List<StationData>> GetStationDataAsync()
+        private async Task<List<StationData>> GetStationDataAsync(DateTime? date)
         {
             var stationDataList = new List<StationData>();
 
@@ -53,10 +55,29 @@ namespace Login.Controllers
                 {
                     await connection.OpenAsync();
 
-                    string query = "SELECT STATION, COUNT(*) AS PASS_COUNT\r\nFROM webapp2.asusft\r\nWHERE STATUS = \"PASS\"\r\nGROUP BY STATION\r\nORDER BY PASS_COUNT DESC;";
+                    // Se uma data foi fornecida, usa ela no filtro da query
+                    string query = "SELECT STATION, COUNT(*) AS PASS_COUNT " +
+                                   "FROM webapp2.asusft " +
+                                   "WHERE STATUS = 'PASS' ";
+
+                    // Adiciona o filtro de data apenas se a data não for nula
+                    if (date.HasValue)
+                    {
+                        query += $"AND DATE = '{date.Value.ToString("dd-MM-yyyy").Replace('-','/')}' ";
+                    }
+
+                    // Adiciona o agrupamento e a ordenação
+                    query += "GROUP BY STATION ORDER BY PASS_COUNT DESC;";
 
                     using (var command = new MySqlCommand(query, connection))
                     {
+                        // Se a data foi fornecida, adiciona o parâmetro para a query
+                        if (date.HasValue)
+                        {
+                            command.Parameters.AddWithValue("@Date", date.Value.ToString("yyyy-MM-dd"));
+                        }
+
+                        _logger.LogInformation($"----Consultando os dados: {query}");
                         using (var reader = await command.ExecuteReaderAsync())
                         {
                             while (await reader.ReadAsync())
@@ -68,8 +89,10 @@ namespace Login.Controllers
                                 });
                             }
                         }
+
                     }
                 }
+
                 _logger.LogInformation("Dados de estações obtidos com sucesso.");
             }
             catch (Exception ex)
@@ -80,15 +103,16 @@ namespace Login.Controllers
             return stationDataList;
         }
 
+
         // Nova ação para retornar os dados de STATION em formato JSON
         [HttpGet]
-        public async Task<JsonResult> GetStationDataJson()
+        public async Task<JsonResult> GetStationDataJson(DateTime? date)
         {
             try
             {
-                _logger.LogInformation("Iniciando a consulta para obter os dados de estações em formato JSON.");
+                _logger.LogInformation("Iniciando a consulta para obter os dados de estações em formato JSON.2");
 
-                var records = await GetStationDataAsync();
+                var records = await GetStationDataAsync(date);
 
                 if (records.Count == 0)
                 {

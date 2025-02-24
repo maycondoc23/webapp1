@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Org.BouncyCastle.Asn1.Ocsp
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -45,8 +46,15 @@
     </style>
 </head>
 <body>
-    <h1>ASUS STATIONS PASS</h1>
+    <div>
+        <h1>ASUS STATIONS PASS</h1>
+        <form method="get" action="/Dashboard/Index">
+            <label for="date">Data:</label>
+            <input type="date" id="date" name="date" value="@Request.Query["date"]">
+            <button type="submit">Filter</button>
+        </form>
 
+    </div>
     <canvas id="myChart" width="400" height="200"></canvas>
 
     <!-- O Modal -->
