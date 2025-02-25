@@ -11,7 +11,7 @@
 
 <body>
     <div>
-        <h1>ASUS STATIONS PASS</h1>
+        <h1>--------------</h1>
         <form id="filterForm" name="filternameform">
             <label for="date">Data:</label>
             <input type="date" id="date" name="date">
@@ -20,15 +20,15 @@
             <select id="modelinput" name="model">
                 @foreach (var Models in Model.ModelsList)
                 {
-                    <option value="@Models.Id">@Models.Modelname</option>
+                    <option value="@Models.Modelname">@Models.Modelname</option>
                 }
             </select>
 
             <label for="customerinput">Customer</label>
-            <select id="customerinput" name="model">
+            <select id="customerinput" name="customers">
                 @foreach (var customer in Model.CustomersList)
                 {
-                    <option value="@customer.Id">@customer.Customername</option>
+                    <option value="@customer.Customername">@customer.Customername</option>
                 }
             </select>
 

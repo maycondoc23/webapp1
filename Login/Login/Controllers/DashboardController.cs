@@ -12,9 +12,8 @@ namespace Login.Controllers
 {
     public class DashboardController : Controller
     {
-        string dataHoje = DateTime.Now.ToString("dd/MM/yyyy");
         private readonly ILogger<DashboardController> _logger;
-        private readonly string _connectionString = "server=localhost;database=webapp2;uid=root;password=1234";
+        private readonly string _connectionString = "server=localhost;database=webapp2;uid=root;password=12345";
 
         public DashboardController(ILogger<DashboardController> logger)
         {
@@ -23,14 +22,14 @@ namespace Login.Controllers
 
         // Método para buscar os dados e passá-los para a view
         [HttpGet]
-        public async Task<ActionResult> Index(DateTime? date)
+        public async Task<ActionResult> Index(DateTime? date, string? model, string? customer)
         {
             try
             {
                 _logger.LogInformation($"Iniciando a consulta para obter os dados de estações. Data: {date}");
 
                 // Chama os métodos para obter os dados da estação e os dados dos clientes
-                var stationDataRecords = await GetStationDataAsync(date);
+                var stationDataRecords = await GetStationDataAsync(date, model, customer);
                 var customers = await GetCustomersasync(); // Chama o método para obter os clientes
                 var Models = await GetModelsasync(); // Chama o método para obter os clientes
 
@@ -135,7 +134,7 @@ namespace Login.Controllers
         }
 
         // Função assíncrona para obter os dados da tabela no banco de dados
-        private async Task<List<StationData>> GetStationDataAsync(DateTime? date)
+        private async Task<List<StationData>> GetStationDataAsync(DateTime? date,  string? model, string? customer)
         {
             var stationDataList = new List<StationData>();
 
@@ -150,18 +149,15 @@ namespace Login.Controllers
                                    "FROM webapp2.asusft " +
                                    "WHERE STATUS = 'PASS' ";
 
-                    // Adiciona o filtro de data apenas se a data não for nula
                     if (date.HasValue)
                     {
                         query += $"AND DATE = '{date.Value.ToString("dd-MM-yyyy").Replace('-', '/')}' ";
                     }
-                    else
-                    {
-                        query += $"AND DATE = '{DateTime.Now.ToString("dd/MM/yyyy")}' ";
-                        
-                    }
 
-                    // Adiciona o agrupamento e a ordenação
+                    // Aqui, o modelo é passado para o filtro SQL
+                    query += $"AND MODEL = '{model}' and CUSTOMER = '{customer}' ";
+
+                    // Resto da query
                     query += "GROUP BY STATION ORDER BY PASS_COUNT DESC;";
 
                     using (var command = new MySqlCommand(query, connection))
@@ -201,13 +197,13 @@ namespace Login.Controllers
 
         // Nova ação para retornar os dados de STATION em formato JSON
         [HttpGet]
-        public async Task<JsonResult> GetStationDataJson(DateTime? date)
+        public async Task<JsonResult> GetStationDataJson(DateTime? date, string? model, string? customer)
         {
             try
             {
                 _logger.LogInformation("Iniciando a consulta para obter os dados de estações em formato JSON.2");
 
-                var records = await GetStationDataAsync(date);
+                var records = await GetStationDataAsync(date, model, customer);
 
                 if (records.Count == 0)
                 {

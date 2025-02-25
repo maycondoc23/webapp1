@@ -25,9 +25,14 @@ document.getElementById("filterForm").addEventListener("submit", function (event
     event.preventDefault();  // Impede o envio padrão do formulário
 
     var selectedDate = document.getElementById("date").value;  // Data selecionada no campo de data
+    var selectedModel = document.getElementById("modelinput").value;  // Data selecionada no campo de data
+    var selectedcustomer = document.getElementById("customerinput").value;  // Data selecionada no campo de data
 
+
+    console.log('==============================================')
+    console.log(selectedModel)
     // Fazendo a requisição AJAX para obter os dados com a data selecionada
-    fetch("/Dashboard/GetStationDataJson?date=" + selectedDate)
+    fetch("/Dashboard/GetStationDataJson?date=" + selectedDate + "&model=" + selectedModel + "&customer=" + selectedcustomer)
         .then(response => response.json())
         .then(data => {
             // Processamento dos dados para o gráfico
