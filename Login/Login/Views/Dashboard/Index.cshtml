@@ -1,63 +1,43 @@
-﻿@using Org.BouncyCastle.Asn1.Ocsp
+﻿@model Login.Models.DashboardViewModel
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0/chartjs-plugin-datalabels.min.js" integrity="sha512-R/QOHLpV1Ggq22vfDAWYOaMd5RopHrJNMxi8/lJu8Oihwi4Ho4BRFeiMiCefn9rasajKjnx9/fTQ/xkWnkDACg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <style>
-        /* Estilo do modal */
-        .modal {
-            display: none; /* Inicialmente oculto */
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4); /* Fundo semi-transparente */
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-            .close:hover,
-            .close:focus {
-                color: black;
-                text-decoration: none;
-                cursor: pointer;
-            }
-    </style>
+    <link rel="stylesheet" href="~/css/styles2.css">
 </head>
+
 <body>
     <div>
         <h1>ASUS STATIONS PASS</h1>
-        <form method="get" action="/Dashboard/Index">
+        <form id="filterForm" name="filternameform">
             <label for="date">Data:</label>
-            <input type="date" id="date" name="date" value="@Request.Query["date"]">
-            <button type="submit">Filter</button>
-        </form>
+            <input type="date" id="date" name="date">
 
+            <label for="modelinput">Modelo</label>
+            <select id="modelinput" name="model">
+                @foreach (var Models in Model.ModelsList)
+                {
+                    <option value="@Models.Id">@Models.Modelname</option>
+                }
+            </select>
+
+            <label for="customerinput">Customer</label>
+            <select id="customerinput" name="model">
+                @foreach (var customer in Model.CustomersList)
+                {
+                    <option value="@customer.Id">@customer.Customername</option>
+                }
+            </select>
+
+            <button id="buttonidform" type="submit">Filter</button>
+        </form>
     </div>
+
     <canvas id="myChart" width="400" height="200"></canvas>
 
-    <!-- O Modal -->
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close" id="closeModalBtn">&times;</span>
@@ -66,103 +46,14 @@
         </div>
     </div>
 
-    <script>
-
-        // Requisição AJAX para buscar os dados em JSON
-        fetch("/Dashboard/GetStationDataJson")
-            .then(response => response.json())
-            .then(data => {
-                // Processamento dos dados para o gráfico
-                var stations = data.map(item => item.station);
-                var passCounts = data.map(item => item.count);
-
-                // Configuração do gráfico
-                const config = {
-                    type: 'bar',
-                    data: {
-                        labels: stations,  // Labels (estações)
-                        datasets: [{
-                            label: 'Quantidade de PASS',
-                            data: passCounts,  // Quantidade de PASS
-                            borderColor: randomColor(),
-                            backgroundColor: "#cde5b3",
-                            fill: false
-                        }]
-                    },
-                    options: {
-						plugins: {
-							datalabels: {
-								anchor: 'end',
-								align: 'end',
-								color: 'black',
-								font: {
-                                    size: "30",
-								}
-							}
-						},
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                suggestedMax: Math.max(...passCounts) + 2,
-                                ticks: {
-                                    padding: 10
-                                }
-                            }
-                        },
-                        // Adicionando o evento de clique
-                        onClick: (e, elements) => {
-                            if (elements.length > 0) {
-                                var index = elements[0].index;  // Índice do item clicado
-                                var station = stations[index];   // Obter o nome da estação
-                                var passCount = passCounts[index]; // Obter a quantidade de PASS
-
-                                // Exibir o modal com as informações da estação
-                                showModal(station, passCount);
-                            }
-                        }
-                    },
-                    plugins: [ChartDataLabels],
-
-                };
-
-                // Função para gerar cores aleatórias
-                function randomColor() {
-                    return 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
-                }
-
-                // Inicializar o gráfico
-                const ctx = document.getElementById('myChart').getContext('2d');
-                new Chart(ctx, config);
-            })
-            .catch(error => {
-                console.error("Erro ao carregar dados: ", error);
-            });
-
-        // Função para mostrar o modal com detalhes da estação
-        function showModal(station, passCount) {
-            var modal = document.getElementById("myModal");
-            var stationDetails = document.getElementById("stationDetails");
-
-            // Atualizando o conteúdo do modal
-            stationDetails.innerHTML = "Estação: " + station + "<br>Quantidade de PASS: " + passCount;
-
-            // Exibindo o modal
-            modal.style.display = "block";
-        }
-
-        // Função para fechar o modal
-        document.getElementById("closeModalBtn").onclick = function() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "none";
-        }
-
-        // Fechar o modal se o usuário clicar fora dele
-        window.onclick = function(event) {
-            var modal = document.getElementById("myModal");
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
 </body>
 </html>
+
+<script src="~/js/Charts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0/chartjs-plugin-datalabels.min.js" integrity="sha512-R/QOHLpV1Ggq22vfDAWYOaMd5RopHrJNMxi8/lJu8Oihwi4Ho4BRFeiMiCefn9rasajKjnx9/fTQ/xkWnkDACg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("buttonidform").click();
+    });
+</script>
